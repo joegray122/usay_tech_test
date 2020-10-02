@@ -1,0 +1,43 @@
+describe('Login form', () => {
+    beforeEach(() => {
+        cy.visit('/index.php?controller=authentication&back=my-account')
+    })
+    it('no email', function () {
+        cy.get('#SubmitCreate').click()
+        cy.get('#create_account_error')
+            .should('be.visible')
+            .contains('Invalid email address.')
+    })
+    it('invalid email', function () {
+        cy.get('#email_create').type('a')
+        cy.get('#SubmitCreate').click()
+        cy.get('#create_account_error')
+            .should('be.visible')
+            .contains('Invalid email address.')
+    })
+    it('email already taken', function () {
+        cy.get('#email_create').type('a@a.com')
+        cy.get('#SubmitCreate').click()
+        cy.get('#create_account_error')
+            .should('be.visible')
+            .contains('An account using this email address has already been registered. Please enter a valid password or request a new one. ')
+    })
+    it('valid email', function () {
+        cy.typeRandEmail('#email_create')
+        cy.get('#SubmitCreate').click()
+        cy.get('#account-creation_form').should('be.visible')
+        cy.get('#id_gender1').click()
+        cy.get('#customer_firstname').type('first')
+        cy.get('#customer_lastname').type('last')
+        cy.get('#firstname').type('first')
+        cy.get('#lastname').type('last')
+        cy.get('#address1').type('address1')
+        cy.get('#city').type('city')
+        cy.get('#state').type('state')
+        cy.get('#postcode').type('postcode')
+        cy.get('#phone_mobile').type('07987654321')
+        cy.get('#submitAccount').click()
+
+        cy.get('#my-account').should('be.visible')
+    })
+})
